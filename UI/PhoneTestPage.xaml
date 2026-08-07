@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="VnbisAgent.UI.PhoneTestPage"
+    Title="Nhật Ký Cuộc Gọi">
+
+    <Grid
+        Padding="10"
+        RowDefinitions="Auto,*">
+
+        <!-- 1. Nút lệnh Đọc/Xem file log lỗi -->
+        <Button
+            Grid.Row="0"
+            x:Name="ButtonReadAgentLog"            
+            Text="Xem File Log Lỗi"
+            Margin="0,0,0,10"
+            Clicked="ButtonReadAgentLog_Clicked" />
+
+        <!-- 2. Danh sách nhật ký cuộc gọi (Mặc định HIỂN THỊ ban đầu) -->
+        <CollectionView 
+            Grid.Row="1" 
+            x:Name="CollectionViewCallLog"
+            SelectionMode="Single"
+            SelectionChanged="CollectionViewCallLog_SelectionChanged"
+            IsVisible="True">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 8" Stroke="#E0E0E0" StrokeThickness="1" Margin="0,4" Padding="12">
+                        <Grid ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
+
+                            <!-- Thời gian cuộc gọi định dạng hh:mm:ss -->
+                            <Label Grid.Column="0" 
+                                   Text="{Binding StartTime, StringFormat='{0:HH:mm:ss}'}" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#555555" 
+                                   VerticalOptions="Center" 
+                                   Margin="0,0,15,0"/>
+
+                            <!-- Hiển thị Tên khách và Số điện thoại (Ẩn CallId) -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding DisplayName}" FontSize="16" FontAttributes="Bold" TextColor="Black" />
+                                <Label Text="{Binding CallerId}" FontSize="14" TextColor="#444444" Margin="0,2,0,0"/>
+                            </VerticalStackLayout>
+
+                            <!-- Icon mũi tên chỉ dẫn -->
+                            <Label Grid.Column="2" Text="➔" TextColor="#BBBBBB" VerticalOptions="Center" FontSize="18"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <Label Text="Không có dữ liệu cuộc gọi nào." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray"/>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- 3. Khung Editor hiển thị Log (Xếp trùng dòng với CollectionView, MẶC ĐỊNH ẨN) -->
+        <Editor
+            Grid.Row="1"
+            x:Name="EditorLog"
+            AutoSize="Disabled"
+            IsReadOnly="True"
+            IsSpellCheckEnabled="False"
+            IsTextPredictionEnabled="False"
+            BackgroundColor="White"
+            TextColor="Black"
+            IsVisible="False"/>
+
+    </Grid>
+</ContentPage>
