@@ -20,9 +20,9 @@
         <!-- 2. Danh sách nhật ký cuộc gọi (Mặc định HIỂN THỊ ban đầu) -->
         <CollectionView 
             Grid.Row="1" 
-            x:Name="CollectionViewCallLog"
+            x:Name="CollectionViewCallEvent"
             SelectionMode="Single"
-            SelectionChanged="CollectionViewCallLog_SelectionChanged"
+            SelectionChanged="CollectionViewCallEvent_SelectionChanged"
             IsVisible="True">
 
             <CollectionView.ItemTemplate>
