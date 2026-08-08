@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="THÔNG TIN CUỘC GỌI"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#555555" />
 
@@ -47,7 +48,9 @@
         android:layout_weight="1"
         android:divider="#F0F0F0"
         android:dividerHeight="1dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:nestedScrollingEnabled="true" />
+	<!-- [SỬA TẠI ĐÂY]: Thêm nestedScrollingEnabled để tránh ListView bị ẩn khi C# đặt WrapContent -->
 
 	<View
         android:layout_width="match_parent"
@@ -56,55 +59,109 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
 
-	<!-- 3. CỤM NÚT BẤM CỐ ĐỊNH Ở ĐÁY -->
+	<!-- 3. CỤM NÚT BẤM CỐ ĐỊNH Ở ĐÁY (4 NÚT) -->
 	<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-		<!-- Nút Nghe Máy (Xanh lá) -->
-		<Button
+		<!-- 1. Nút Nghe Máy (Xanh lá) -->
+		<androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAnswer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="NGHE MÁY"
+            android:layout_marginEnd="2dp"
+            android:minHeight="48dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text="Nghe&#10;máy"
+            android:textSize="11sp"
             android:textStyle="bold"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:maxLines="2"
             android:textColor="#FFFFFF"
             android:backgroundTint="#28A745"
-            android:padding="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp" />
+            app:insetTop="0dp"
+            app:insetBottom="0dp" />
+		<!-- [SỬA TẠI ĐÂY]: Đổi android:insetTop -> app:insetTop (và Bottom) để triệt tiêu viền ẩn nút -->
 
-		<!-- Nút Hủy (Đỏ đậm) -->
-		<Button
+		<!-- 2. Nút Từ Chối (Đỏ) -->
+		<androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnReject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-			android:layout_marginEnd="4dp"
-            android:text="HUỶ"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:minHeight="48dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text="Từ&#10;chối"
+            android:textSize="11sp"
             android:textStyle="bold"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:maxLines="2"
             android:textColor="#FFFFFF"
             android:backgroundTint="#DC3545"
-            android:padding="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp" />
+            app:insetTop="0dp"
+            app:insetBottom="0dp" />
+		<!-- [SỬA TẠI ĐÂY]: Đổi android:insetTop -> app:insetTop (và Bottom) -->
 
-		<!-- Nút Thoát (Đỏ nhạt) -->
-		<Button
+		<!-- 3. Nút Chia Sẻ (Xanh dương Zalo/Share) -->
+		<androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnShare"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:minHeight="48dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text="Chia&#10;sẻ"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0088CC"
+            app:insetTop="0dp"
+            app:insetBottom="0dp" />
+		<!-- [SỬA TẠI ĐÂY]: Đổi android:insetTop -> app:insetTop (và Bottom) -->
+
+		<!-- 4. Nút Thoát (Xám đậm / Đỏ nhạt) -->
+		<androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnClose"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="THOÁT"
+            android:layout_marginStart="2dp"
+            android:minHeight="48dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text="Thoát"
+            android:textSize="11sp"
             android:textStyle="bold"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:maxLines="2"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#E57373"
-            android:padding="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp" />
+            android:backgroundTint="#6C757D"
+            app:insetTop="0dp"
+            app:insetBottom="0dp" />
+		<!-- [SỬA TẠI ĐÂY]: Đổi android:insetTop -> app:insetTop (và Bottom) -->
 	</LinearLayout>
 
 </LinearLayout>

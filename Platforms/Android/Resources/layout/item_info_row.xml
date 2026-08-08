@@ -3,24 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="4dp">
+    android:paddingVertical="5dp"
+    android:paddingHorizontal="6dp"
+    android:gravity="center_vertical">
+	<!-- [SỬA TẠI ĐÂY 1]: Giảm paddingVertical từ 8dp xuống 5dp để tiết kiệm không gian dọc -->
+	<!-- [SỬA TẠI ĐÂY 2]: Thêm gravity="center_vertical" để Cột 1 và Cột 2 luôn căn giữa theo chiều đứng -->
 
-    <!-- Cột 1: Tiêu đề -->
-    <TextView
+	<!-- Cột 1: Tiêu đề -->
+	<TextView
         android:id="@+id/lblTitle"
-        android:layout_width="100dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:textColor="#555555" />
 
-    <!-- Cột 2: Nội dung -->
-    <TextView
+	<!-- Cột 2: Nội dung -->
+	<TextView
         android:id="@+id/lblContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="14sp"
-        android:textColor="#000000" />
+        android:textSize="13sp"
+        android:textColor="#000000"
+        android:maxLines="3"
+        android:ellipsize="end" />
+	<!-- [SỬA TẠI ĐÂY 3]: Giảm textSize xuống 13sp. Khống chế maxLines="3" và ellipsize="end" 
+             để dữ liệu quá dài không làm phồng chiều cao hàng quá mức -->
 </LinearLayout>
