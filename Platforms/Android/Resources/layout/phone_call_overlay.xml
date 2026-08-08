@@ -1,119 +1,110 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"	
-    android:background="#FFFFFF"
-    android:padding="10dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
-	<!-- Tiêu đề -->
-
-	<TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="THÔNG TIN KHÁCH HÀNG"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="10dp"/>
-
-	<!-- Điện thoại -->
-
-	<TextView
-        android:id="@+id/lblPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Số điện thoại"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-
-	<!-- Tên khách -->
-
-	<TextView
-        android:id="@+id/lblCustomer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tên khách hàng"
-        android:textSize="18sp"
-        android:paddingTop="6dp"/>
-
-	<!-- Công nợ -->
-
-	<TextView
-        android:id="@+id/lblDebt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Công nợ"
-        android:textSize="18sp"
-        android:textColor="#FF0000"
-        android:paddingTop="6dp"/>
-
-	<!-- Nội dung nghiệp vụ -->
-
-	<ScrollView
-        android:id="@+id/scrBusiness"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp">
-
-		<LinearLayout
-            android:id="@+id/pnlBusiness"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-			<!-- Sau này Binding SQL/API -->
-			<!-- Có thể AddView động -->
-
-		</LinearLayout>
-
-	</ScrollView>
-
-	<!-- Ghi chú -->
-
-	<EditText
-        android:id="@+id/txtNote"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:gravity="top"
-        android:hint="Ghi chú nội dung cuộc gọi..."
-        android:inputType="textMultiLine"
-        android:padding="8dp"/>
-
-	<!-- Các nút -->
-
+	<!-- 1. HEADER: THÔNG TIN CUỘC GỌI -->
 	<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
-        android:paddingTop="10dp">
+        android:paddingBottom="8dp">
 
-		<Button
-            android:id="@+id/btnCancel"
-            android:layout_width="0dp"
+		<TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Huỷ"/>
+            android:text="THÔNG TIN CUỘC GỌI"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#555555" />
 
+		<TextView
+            android:id="@+id/lblPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0988080086"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#007ACC"
+            android:layout_marginTop="4dp" />
+	</LinearLayout>
+
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        android:layout_marginBottom="8dp" />
+
+	<!-- 2. DANH SÁCH 2 CỘT DỰA TRÊN DATATABLE -->
+	<ListView
+        android:id="@+id/lstInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#F0F0F0"
+        android:dividerHeight="1dp"
+        android:scrollbars="vertical" />
+
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+	<!-- 3. CỤM NÚT BẤM CỐ ĐỊNH Ở ĐÁY -->
+	<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+		<!-- Nút Nghe Máy (Xanh lá) -->
 		<Button
             android:id="@+id/btnAnswer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Nghe"/>
+            android:text="NGHE MÁY"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#28A745"
+            android:padding="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
+		<!-- Nút Hủy (Đỏ đậm) -->
+		<Button
+            android:id="@+id/btnReject"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+			android:layout_marginEnd="4dp"
+            android:text="HUỶ"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#DC3545"
+            android:padding="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+
+		<!-- Nút Thoát (Đỏ nhạt) -->
 		<Button
             android:id="@+id/btnClose"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Thoát"/>
-
+            android:text="THOÁT"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#E57373"
+            android:padding="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 	</LinearLayout>
 
 </LinearLayout>
