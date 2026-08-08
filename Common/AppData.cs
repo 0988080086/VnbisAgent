@@ -16,8 +16,10 @@ public class AppData
     private static long _LastCallID = 0;
     //Biến lưu trữ Context
     private static object? _serviceContext;
-    private static long _TopMarginPecent = 28; //Lùi pupop xuống 28% màn hình, khi có cuộc gọi đến
-    private static long _ButtonMarginPecent = 10; //Nhô pupop lên 10% màn hình, khi có cuộc gọi đến
+    private static long _TopMarginPecent = 25; //Lùi pupop xuống 28% màn hình, khi có cuộc gọi đến
+    private static long _ButtonMarginPecent = 5; //Nhô pupop lên 10% màn hình, khi có cuộc gọi đến
+    private static bool _CloseCallPopupWhenCallIDLE = false;
+
 
     /// <summary>Thuộc tính Mã thiết bị điện thoại </summary>
     public static string DeviceId
@@ -82,6 +84,9 @@ public class AppData
         get { return _ButtonMarginPecent; }
         set { _ButtonMarginPecent = value; }
     }
+    public static bool CloseCallPopupWhenCallIDLE { get { return _CloseCallPopupWhenCallIDLE; } set { _CloseCallPopupWhenCallIDLE = value; } }
+
+
     //Tạo sự kiện: Hiển thị Popup (Gọi thật từ OverlayManager.Show)
     public static void ShowPopupTel(string _CallerId, string _DisplayName)
     {
