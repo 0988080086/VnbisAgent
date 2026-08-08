@@ -43,4 +43,8 @@ public class OverlayData : BaseAdapter
 
         return view;
     }
+    public System.Data.DataTable ViewData
+    {
+        get { return _table; }
+    }
 }

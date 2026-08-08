@@ -125,9 +125,9 @@ public class CallBroadcastReceiver : BroadcastReceiver
                     //Luôn gửi, vì chỉ có BroadcastReceiver mới nhận được sự kiện này
                     VnbisAgent.Common.CallManager.Instance.PushEvent(_EventIn);
 
-                    //Gọi đóng cửa sổ Popup nếu tồn tại
-                    // Bắn sự kiện ra ngoài
-                    OnCallEnded?.Invoke();
+                    //Gọi đóng cửa sổ Popup nếu tồn tại và có cấu hình CloseCallPopupWhenCallIDLE = True
+                    // Bắn sự kiện 'Đóng Popup' ra ngoài
+                    if (VnbisAgent.Common.AppData.CloseCallPopupWhenCallIDLE==true) OnCallEnded?.Invoke();
                 }
             }
         }
