@@ -1,6 +1,9 @@
 ﻿//Lưu biến toàn cục
 //Với Android, phải gọi VnbisAgent.Common.AppData.Init(); trong MainActivity.OnCreate
 //Với IOS thì cũng tương tự, nhưng chưa biết gọi ở đâu, tính sau
+using System.Data;
+using System.Xml;
+
 namespace VnbisAgent.Common;
 
 public class AppData
@@ -13,6 +16,8 @@ public class AppData
     private static long _LastCallID = 0;
     //Biến lưu trữ Context
     private static object? _serviceContext;
+    private static long _TopMarginPecent = 28; //Lùi pupop xuống 28% màn hình, khi có cuộc gọi đến
+    private static long _ButtonMarginPecent = 10; //Nhô pupop lên 10% màn hình, khi có cuộc gọi đến
 
     /// <summary>Thuộc tính Mã thiết bị điện thoại </summary>
     public static string DeviceId
@@ -54,7 +59,10 @@ public class AppData
             _LastCallID = value;
         }
     }
-
+    public static DataTable OVerlayDataTemp
+    {
+        get { return CreateDefaultDataTable(); }
+    }
     /// <summary>Thuộc tính ReadLogs</summary>
     public static Func<List<CallLogItem>>? ReadLogs { get; set; }
 
@@ -64,7 +72,16 @@ public class AppData
         get => _serviceContext;
         set => _serviceContext = value;
     }
-
+    public static long TopMarginPecent
+    {
+        get { return _TopMarginPecent; }
+        set { _TopMarginPecent = value; }
+    }
+    public static long ButtonMarginPecent
+    {
+        get { return _ButtonMarginPecent; }
+        set { _ButtonMarginPecent = value; }
+    }
     //Tạo sự kiện: Hiển thị Popup (Gọi thật từ OverlayManager.Show)
     public static void ShowPopupTel(string _CallerId, string _DisplayName)
     {
@@ -151,5 +168,18 @@ public class AppData
         {
             VnbisAgent.Common.LogWriter.WriteLine("Lỗi thực thi trong hàm gộp AppData.ShowPopupTel: " + ex.Message);
         }
+    }
+    private static DataTable CreateDefaultDataTable()
+    {
+        DataTable dt = new DataTable();
+        dt.Columns.Add("TieuDe", typeof(string));
+        dt.Columns.Add("NoiDung", typeof(string));
+
+        dt.Rows.Add("Mã KH", "KH00001");
+        dt.Rows.Add("Tên KH", "Nguyễn Công Đân");
+        dt.Rows.Add("Địa chỉ", "thôn Đông Trạch, xã Nam Phù, TP Hà Nội, Việt Nam");
+        dt.Rows.Add("Điện th", "0988080086, 0932312669, 02436830372");
+        dt.Rows.Add("Ghi chú", "Nội dung 1" + Environment.NewLine + "Nội dung 2" + Environment.NewLine + "Nội dung 23" + Environment.NewLine + "Nội dung 4" + Environment.NewLine + "Nội dung 5" + Environment.NewLine + "Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 Nội dung 6 ");        
+        return dt;
     }
 }
