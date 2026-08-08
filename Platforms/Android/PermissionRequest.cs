@@ -6,50 +6,58 @@ using Android.OS;
 using Android.Provider;
 using AndroidX.Core.App;
 using AndroidX.Core.Content;
-using System.Threading.Tasks;
-using static Microsoft.Maui.ApplicationModel.Platform;
+//using System.Threading.Tasks;
+//using static Microsoft.Maui.ApplicationModel.Platform;
 
 namespace VnbisAgent.Platforms.Android;
 
 public static class PermissionRequest
 {
-    
-    //TaskCompletionSource cho các quyền
-    private static TaskCompletionSource<bool>? _phonePermissionTcs;         //READ_PHONE_STATE
-    private static TaskCompletionSource<bool>? _callLogPermissionTcs;       //READ_CALL_LOG
-    private static TaskCompletionSource<bool>? _contactsPermissionTcs;      //READ_CONTACTS
-    private static TaskCompletionSource<bool>? _batteryPermissionTcs;       //BatteryOptimization
-    private static TaskCompletionSource<bool>? _overlayPermissionTcs;       //Overlay
-    private static TaskCompletionSource<bool>? _callScreeningPermissionTcs; //CallScreening
+    // TaskCompletionSource cho các quyền
+    private static TaskCompletionSource<bool>? _phonePermissionTcs;             // READ_PHONE_STATE
+    private static TaskCompletionSource<bool>? _callLogPermissionTcs;           // READ_CALL_LOG
+    private static TaskCompletionSource<bool>? _contactsPermissionTcs;          // READ_CONTACTS
+    private static TaskCompletionSource<bool>? _answerPhoneCallsPermissionTcs;  // ANSWER_PHONE_CALLS
+    private static TaskCompletionSource<bool>? _callPhonePermissionTcs;         // CALL_PHONE
+    private static TaskCompletionSource<bool>? _batteryPermissionTcs;           // BatteryOptimization
+    private static TaskCompletionSource<bool>? _overlayPermissionTcs;           // Overlay
+    private static TaskCompletionSource<bool>? _callScreeningPermissionTcs;     // CallScreening
 
-    //Mã định danh cho các dạng Quyền
-    public const int RequestPhoneCode = 1001;           //READ_PHONE_STATE
-    public const int RequestCallLogCode = 1002;         //READ_CALL_LOG
-    public const int RequestContactsCode = 1003;        //READ_CONTACTS
-    public const int RequestBatteryCode = 1004;         //Battery
-    public const int RequestOverlayCode = 1005;         //Overlay    
-    private const int RequestCallScreeningCode = 2002;  //CallScreening
+    // Mã định danh cho các dạng Quyền
+    public const int RequestPhoneCode = 1001;               // READ_PHONE_STATE
+    public const int RequestCallLogCode = 1002;             // READ_CALL_LOG
+    public const int RequestContactsCode = 1003;            // READ_CONTACTS
+    public const int RequestAnswerPhoneCallsCode = 1004;    // ANSWER_PHONE_CALLS
+    public const int RequestCallPhoneCode = 1005;           // CALL_PHONE
+    public const int RequestBatteryCode = 1006;             // Battery
+    public const int RequestOverlayCode = 1007;             // Overlay    
+    private const int RequestCallScreeningCode = 2002;      // CallScreening
 
-
-    //ALL. Request Queue async/await (Gọi lần lượt)
+    // ALL. Request Queue async/await (Gọi xin quyền lần lượt)
     public static async Task RequestAllPermissionsAsync(Activity activity)
     {
-        // 1. Xin quyền Điện thoại
+        // 1. Xin quyền Trạng thái điện thoại (READ_PHONE_STATE)
         bool phoneGranted = await RequestPhonePermissionAsync(activity);
 
-        // 2. Xin quyền Nhật ký cuộc gọi
+        // 2. Xin quyền Nhật ký cuộc gọi (READ_CALL_LOG)
         bool callLogGranted = await RequestCallLogPermissionAsync(activity);
-        
-        // 3. Xin quyền đọc danh bạ
+
+        // 3. Xin quyền đọc Danh bạ (READ_CONTACTS)
         bool contactsGranted = await RequestContactsPermissionAsync(activity);
 
-        // 4. Xin quyền Bỏ tối ưu pin
-        bool _batteryPermissionTcs=await RequestIgnoreBatteryOptimization(activity);
+        // 4. Xin quyền Nghe cuộc gọi (ANSWER_PHONE_CALLS)
+        bool answerCallsGranted = await RequestAnswerPhoneCallsPermissionAsync(activity);
 
-        // 5. XỬ LÝ MỚI: Xin quyền hiển thị trên ứng dụng khác (Đợi người dùng bật xong quay lại mới chạy tiếp)
+        // 5. Xin quyền Thực hiện/Ngắt cuộc gọi (CALL_PHONE)
+        bool callPhoneGranted = await RequestCallPhonePermissionAsync(activity);
+
+        // 6. Xin quyền Bỏ tối ưu pin
+        bool batteryGranted = await RequestIgnoreBatteryOptimization(activity);
+
+        // 7. Xin quyền hiển thị trên ứng dụng khác (Overlay)
         bool overlayGranted = await RequestOverlayPermissionAsync(activity);
 
-        //6. CallScreening        
+        // 8. Xin quyền CallScreening Role
         if (VnbisAgent.Common.AppData.IsCallScreeningEnabled == false)
         {
             bool screeningGranted = await RequestCallScreeningAsync(activity);
@@ -57,7 +65,7 @@ public static class PermissionRequest
         }
     }
 
-    //1. Request READ_PHONE_STATE
+    // 1. Request READ_PHONE_STATE
     public static Task<bool> RequestPhonePermissionAsync(Activity activity)
     {
         if (ContextCompat.CheckSelfPermission(activity, global::Android.Manifest.Permission.ReadPhoneState) == Permission.Granted)
@@ -75,7 +83,7 @@ public static class PermissionRequest
         return _phonePermissionTcs.Task;
     }
 
-    //2. Request  READ_CALL_LOG
+    // 2. Request READ_CALL_LOG
     public static Task<bool> RequestCallLogPermissionAsync(Activity activity)
     {
         if (ContextCompat.CheckSelfPermission(activity, global::Android.Manifest.Permission.ReadCallLog) == Permission.Granted)
@@ -96,13 +104,13 @@ public static class PermissionRequest
     // 3. Request READ_CONTACTS
     public static Task<bool> RequestContactsPermissionAsync(Activity activity)
     {
-        // Nếu điện thoại đã được cấp quyền danh bạ từ trước rồi thì bỏ qua và trả về true luôn
         if (ContextCompat.CheckSelfPermission(activity, global::Android.Manifest.Permission.ReadContacts) == Permission.Granted)
         {
             return Task.FromResult(true);
         }
+
         _contactsPermissionTcs = new TaskCompletionSource<bool>();
-        // Bật hộp thoại xin quyền chuẩn Android hệ thống lên màn hình
+
         ActivityCompat.RequestPermissions(
             activity,
             new string[] { global::Android.Manifest.Permission.ReadContacts },
@@ -111,7 +119,49 @@ public static class PermissionRequest
         return _contactsPermissionTcs.Task;
     }
 
-    //4. Request BatteryOptimization
+    // 4. Request ANSWER_PHONE_CALLS (Quyền trả lời cuộc gọi)
+    public static Task<bool> RequestAnswerPhoneCallsPermissionAsync(Activity activity)
+    {
+        // Quyền này chỉ hỗ trợ từ Android 8.0 (API level 26) trở lên
+        if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+        {
+            return Task.FromResult(true);
+        }
+
+        if (ContextCompat.CheckSelfPermission(activity, global::Android.Manifest.Permission.AnswerPhoneCalls) == Permission.Granted)
+        {
+            return Task.FromResult(true);
+        }
+
+        _answerPhoneCallsPermissionTcs = new TaskCompletionSource<bool>();
+
+        ActivityCompat.RequestPermissions(
+            activity,
+            new string[] { global::Android.Manifest.Permission.AnswerPhoneCalls },
+            RequestAnswerPhoneCallsCode);
+
+        return _answerPhoneCallsPermissionTcs.Task;
+    }
+
+    // 5. Request CALL_PHONE (Quyền ngắt / thực hiện cuộc gọi)
+    public static Task<bool> RequestCallPhonePermissionAsync(Activity activity)
+    {
+        if (ContextCompat.CheckSelfPermission(activity, global::Android.Manifest.Permission.CallPhone) == Permission.Granted)
+        {
+            return Task.FromResult(true);
+        }
+
+        _callPhonePermissionTcs = new TaskCompletionSource<bool>();
+
+        ActivityCompat.RequestPermissions(
+            activity,
+            new string[] { global::Android.Manifest.Permission.CallPhone },
+            RequestCallPhoneCode);
+
+        return _callPhonePermissionTcs.Task;
+    }
+
+    // 6. Request BatteryOptimization
     public static Task<bool> RequestIgnoreBatteryOptimization(Activity activity)
     {
         if (Build.VERSION.SdkInt < BuildVersionCodes.M)
@@ -121,7 +171,6 @@ public static class PermissionRequest
 
         PowerManager? pm = activity.GetSystemService(Context.PowerService) as PowerManager;
 
-        // Nếu thiết bị Samsung đã được bỏ tối ưu pin rồi thì trả về true và đi tiếp
         if (pm == null || pm.IsIgnoringBatteryOptimizations(activity.PackageName))
         {
             return Task.FromResult(true);
@@ -132,16 +181,14 @@ public static class PermissionRequest
         global::Android.Content.Intent intent = new global::Android.Content.Intent(Settings.ActionRequestIgnoreBatteryOptimizations);
         intent.SetData(global::Android.Net.Uri.Parse("package:" + activity.PackageName));
 
-        // Ép Android phải trả kết quả về thông qua OnActivityResult kèm mã RequestBatteryCode
         activity.StartActivityForResult(intent, RequestBatteryCode);
 
         return _batteryPermissionTcs.Task;
     }
 
-    //5. Request Overlay
+    // 7. Request Overlay
     public static Task<bool> RequestOverlayPermissionAsync(Activity activity)
     {
-        // Nếu đã có quyền rồi thì bỏ qua và trả về true ngay lập tức
         if (global::Android.Provider.Settings.CanDrawOverlays(activity))
         {
             return Task.FromResult(true);
@@ -154,34 +201,39 @@ public static class PermissionRequest
             global::Android.Net.Uri.Parse("package:" + activity.PackageName)
         );
 
-        // Sử dụng StartActivityForResult để có thể bắt được sự kiện khi họ tắt màn hình cài đặt quay về app
         activity.StartActivityForResult(intent, RequestOverlayCode);
 
         return _overlayPermissionTcs.Task;
     }
 
-    //6. Request CallScreening
+    // 8. Request CallScreening
     public static Task<bool> RequestCallScreeningAsync(Activity activity)
-    {   
+    {
         if (Build.VERSION.SdkInt < BuildVersionCodes.Q)
             return Task.FromResult(false);
+
         RoleManager? roleManager =
             activity.GetSystemService(Java.Lang.Class.FromType(typeof(RoleManager)))
             as RoleManager;
+
         if (roleManager == null)
             return Task.FromResult(false);
+
         if (roleManager.IsRoleHeld(RoleManager.RoleCallScreening))
         {
             return Task.FromResult(true);
         }
+
         _callScreeningPermissionTcs = new TaskCompletionSource<bool>();
+
 #pragma warning disable CS0618
-        activity.StartActivityForResult(roleManager.CreateRequestRoleIntent(RoleManager.RoleCallScreening),RequestCallScreeningCode);
+        activity.StartActivityForResult(roleManager.CreateRequestRoleIntent(RoleManager.RoleCallScreening), RequestCallScreeningCode);
 #pragma warning restore CS0618        
+
         return _callScreeningPermissionTcs.Task;
     }
 
-    //OnRequest CALL_LOGS After READ_PHONE_STATE
+    // Lắng nghe kết quả từ dialog cấp quyền hệ thống (ActivityCompat.RequestPermissions)
     public static void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
     {
         bool isGranted = grantResults.Length > 0 && grantResults[0] == Permission.Granted;
@@ -196,7 +248,6 @@ public static class PermissionRequest
             if (isGranted)
             {
 #if ANDROID
-                // Phát tín hiệu thông điệp trực tiếp sang AgentService yêu cầu quét và nạp mảng dữ liệu ngay lập tức
                 var context = Microsoft.Maui.ApplicationModel.Platform.AppContext;
                 var refreshIntent = new global::Android.Content.Intent(context, typeof(global::VnbisAgent.Platforms.Android.AgentService));
                 refreshIntent.SetAction("ACTION_REFRESH_CALL_LOGS");
@@ -211,15 +262,21 @@ public static class PermissionRequest
         {
             _contactsPermissionTcs?.TrySetResult(isGranted);
         }
+        else if (requestCode == RequestAnswerPhoneCallsCode)
+        {
+            _answerPhoneCallsPermissionTcs?.TrySetResult(isGranted);
+        }
+        else if (requestCode == RequestCallPhoneCode)
+        {
+            _callPhonePermissionTcs?.TrySetResult(isGranted);
+        }
     }
 
-    //OnActivity CanDrawOverlays
+    // Lắng nghe kết quả từ các Intent cài đặt hệ thống (StartActivityForResult)
     public static void OnActivityResult(int requestCode, Result resultCode, global::Android.Content.Intent? data, Activity activity)
     {
-        //OnActivityResult for CanDrawOverlays
         if (requestCode == RequestOverlayCode)
         {
-            // Kiểm tra lại xem sau khi quay lại app, người dùng đã thực sự bật On chưa
             bool isGranted = global::Android.Provider.Settings.CanDrawOverlays(activity);
             _overlayPermissionTcs?.TrySetResult(isGranted);
         }
@@ -230,8 +287,7 @@ public static class PermissionRequest
 
             _batteryPermissionTcs?.TrySetResult(isIgnoring);
         }
-        //OnActivityResult for CallScreening
-        if (requestCode == RequestCallScreeningCode)
+        else if (requestCode == RequestCallScreeningCode)
         {
             bool granted = false;
 
@@ -241,9 +297,8 @@ public static class PermissionRequest
 
                 if (roleManager != null)
                     granted = roleManager.IsRoleHeld(RoleManager.RoleCallScreening);
-            }            
+            }
             _callScreeningPermissionTcs?.TrySetResult(granted);
-            return;
         }
     }
 }

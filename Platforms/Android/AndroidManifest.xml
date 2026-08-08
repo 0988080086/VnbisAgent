@@ -4,9 +4,14 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 
-	<!-- Quyền cũ -->
+	<!-- Quyền đọc thông tin cuộc gọi -->
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.READ_CALL_LOG" />
+
+	<!-- Quyền đọc nhấn nghe và huỷ cuộc gọi -->
+	<uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+	<uses-permission android:name="android.permission.CALL_PHONE" />
+	
 	<!-- Nhận số gọi đi -->
 	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
 	<!-- Phục vụ tránh báo lỗi liên quan tới Call Screening-->

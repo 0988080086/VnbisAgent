@@ -7,6 +7,7 @@ using AndroidX.Core.Content;
 using Javax.Annotation.Meta;
 using VnbisAgent.Common;
 using VnbisAgent.Platforms.Android;
+using VnbisAgent.Platforms.Android.Services;
 
 //Khai báo Service, cần chi tiết: [Service(Exported = false,ForegroundServiceType = ForegroundService.TypeDataSync)]
 //Và cần bổ sung vào AndroidManifest.xml: <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
@@ -25,6 +26,9 @@ public class AgentService : Service
     public override void OnCreate()
     {
         base.OnCreate();
+        _overlayManager = new OverlayManager(this);
+        // Đăng ký sự kiện ngắt cuộc gọi từ Receiver
+        CallBroadcastReceiver.OnCallEnded += HandleCallEnded;
 
         //Bước 1: Khởi tạo biến môi trường        
         _Context = ApplicationContext;
@@ -70,6 +74,20 @@ public class AgentService : Service
             VnbisAgent.Common.CallManager.Instance.NotifySessionChanged();
         }        
     }
+    private void HandleCallEnded()
+    {
+        // Chạy trên Main Thread (UI Thread) để đóng Popup an toàn
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            _overlayManager?.Close();
+        });
+    }
+    public override void OnDestroy()
+    {
+        // Hủy đăng ký để tránh leak bộ nhớ
+        CallBroadcastReceiver.OnCallEnded -= HandleCallEnded;
+        base.OnDestroy();
+    }
     // Hàm duy nhất: Nhận sự kiện đón nhận tất cả các lệnh điều hướng được gửi từ màn hình UI XAML hoặc từ các file xử lý quyền gửi sang.
     public override StartCommandResult OnStartCommand(Intent? intent,StartCommandFlags flags,int startId)
     {
@@ -83,7 +101,7 @@ public class AgentService : Service
             string customerName = intent.GetStringExtra("SELECTED_NAME") ?? "Khách hàng lạ";
 
             // Ra lệnh cho biến toàn cục _overlayManager của bạn vẽ file phone_call_overlay.xml lên
-            _overlayManager?.Show(phoneNumber, customerName);
+            _overlayManager?.Show(phoneNumber, VnbisAgent.Common.AppData.OVerlayDataTemp);
         }
 
         //Sự kiện đã cấp quyền đọc nhật ký, thì đọc lại

@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.OM;
 using Android.Locations;
 using Android.Telephony;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,10 @@ namespace VnbisAgent.Platforms.Android.Services;
 [BroadcastReceiver(Enabled = true,Exported = true)]
 [IntentFilter(new string[]{TelephonyManager.ActionPhoneStateChanged, Intent.ActionNewOutgoingCall })]
 public class CallBroadcastReceiver : BroadcastReceiver
-{   
+{
+    // Tạo sự kiện static báo trạng thái cuộc gọi kết thúc
+    public static event Action? OnCallEnded;
+
     private static string savedNumber = "";
     // Chỉ chống nhiễu Android
     private static string _lastState = "";
@@ -120,6 +124,10 @@ public class CallBroadcastReceiver : BroadcastReceiver
 
                     //Luôn gửi, vì chỉ có BroadcastReceiver mới nhận được sự kiện này
                     VnbisAgent.Common.CallManager.Instance.PushEvent(_EventIn);
+
+                    //Gọi đóng cửa sổ Popup nếu tồn tại
+                    // Bắn sự kiện ra ngoài
+                    OnCallEnded?.Invoke();
                 }
             }
         }
